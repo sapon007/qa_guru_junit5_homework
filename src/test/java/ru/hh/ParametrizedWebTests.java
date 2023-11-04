@@ -3,7 +3,6 @@ package ru.hh;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,13 +27,12 @@ public class ParametrizedWebTests {
     }
 
     @Tag("mainSearch")
-    @DisplayName("Проверка основного поиска по вакансиям")
     @ValueSource(strings = {
             "Тестировщик",
             "Разработчик",
             "Водитель"
     })
-    @ParameterizedTest
+    @ParameterizedTest(name = "Проверка основного поиска по вакансиям. Кейс: {0}")
     void searchForVacancies(String jobTitle) {
         open("/");
         $(byAttribute("data-qa", "search-input")).setValue(jobTitle);
@@ -43,12 +41,11 @@ public class ParametrizedWebTests {
     }
 
     @Tag("companySearch")
-    @DisplayName("Проверка поиска по первой букве компаниии")
     @CsvSource(value = {
             "Т, Т1 Консалтинг",
             "Д, Даблби"
     })
-    @ParameterizedTest
+    @ParameterizedTest(name = "Проверка поиска по первой букве компаниии. Буква: {0}; Компания: {1}")
     void searchByTheFirstLetterOfTheCompanyName(char letter, String companyName) {
         open("/employers_list?query=&areaId=113&hhtmFrom=vacancy_search_list");
         $(byAttribute("data-qa","alfabeta-list-link-" + letter)).click();
@@ -56,9 +53,8 @@ public class ParametrizedWebTests {
     }
 
     @Tag("searchSuggestion")
-    @DisplayName("Проверка подсказок основного поиска")
     @MethodSource("requestAndSuggestions")
-    @ParameterizedTest
+    @ParameterizedTest(name = "Проверка подсказок основного поиска")
     void checkSearchSuggest(String request, List<String> suggestions) {
         open("/");
         $(byAttribute("data-qa", "search-input")).setValue(request);
